@@ -55,7 +55,7 @@ describe("Given I am connected as an employee", () => {
             const datesSorted = [...dates].sort(antiChrono)
             expect(dates).toEqual(datesSorted)
         })
-        test("then fetches bills from mock API GET", async () => {
+        test("Then fetches bills from mock API GET", async () => {
             const spyList = jest.spyOn(mockStore.bills(), "list")
             const root = document.createElement("div")
             root.setAttribute("id", "root")
