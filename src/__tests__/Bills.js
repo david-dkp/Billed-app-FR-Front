@@ -2,16 +2,26 @@
  * @jest-environment jsdom
  */
 
-import { screen, waitFor } from "@testing-library/dom"
+import {
+    screen,
+    waitFor,
+    waitForDomChange,
+    waitForElement,
+} from "@testing-library/dom"
+import { toHaveAttribute } from "@testing-library/jest-dom/matchers"
 
 import BillsUI from "../views/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
 import Bills from "../containers/Bills.js"
 import { ROUTES } from "../constants/routes.js"
+import mockStore from "../__mocks__/store"
 import { ROUTES_PATH } from "../constants/routes.js"
 import { localStorageMock } from "../__mocks__/localStorage.js"
 
 import router from "../app/Router.js"
+
+expect.extend({ toHaveAttribute })
+jest.mock("../app/store", () => mockStore)
 
 describe("Given I am connected as an employee", () => {
     describe("When I am on Bills Page", () => {
@@ -44,6 +54,40 @@ describe("Given I am connected as an employee", () => {
             const antiChrono = (a, b) => (a < b ? 1 : -1)
             const datesSorted = [...dates].sort(antiChrono)
             expect(dates).toEqual(datesSorted)
+        })
+        test("then fetches bills from mock API GET", async () => {
+            const root = document.createElement("div")
+            root.setAttribute("id", "root")
+            document.body.append(root)
+            router()
+            window.onNavigate(ROUTES_PATH.Bills)
+            const billImageName = screen.getByText("Hôtel et logement")
+            expect(billImageName).toBeTruthy()
+        })
+    })
+    describe("When I am on Bills Page and click New Bill", () => {
+        test("Then I should be redirected to New Bill Page", async () => {
+            const root = document.createElement("div")
+            root.setAttribute("id", "root")
+            document.body.append(root)
+            router()
+            window.onNavigate(ROUTES_PATH.Bills)
+            const buttonNewBill = screen.getByTestId("btn-new-bill")
+            buttonNewBill.click()
+            const pageTitle = screen.getByText("Envoyer une note de frais")
+            expect(pageTitle).toBeTruthy()
+        })
+    })
+    describe("When I am on Bills Page and click on Icon eye", () => {
+        test("Then I should see the modal", async () => {
+            const root = document.createElement("div")
+            root.setAttribute("id", "root")
+            document.body.append(root)
+            router()
+            window.onNavigate(ROUTES_PATH.Bills)
+
+            const billIconEye = screen.getAllByTestId("icon-eye")[0]
+            billIconEye.click()
         })
     })
 })
