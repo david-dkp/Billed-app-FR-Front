@@ -56,11 +56,14 @@ describe("Given I am connected as an employee", () => {
             expect(dates).toEqual(datesSorted)
         })
         test("then fetches bills from mock API GET", async () => {
+            const spyList = jest.spyOn(mockStore.bills(), "list")
             const root = document.createElement("div")
             root.setAttribute("id", "root")
             document.body.append(root)
             router()
             window.onNavigate(ROUTES_PATH.Bills)
+
+            expect(spyList).toHaveBeenCalled()
             const billImageName = screen.getByText("Hôtel et logement")
             expect(billImageName).toBeTruthy()
         })
