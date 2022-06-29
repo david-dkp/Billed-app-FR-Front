@@ -82,15 +82,23 @@ describe("Given I am connected as an employee", () => {
         })
     })
     describe("When I am on Bills Page and click on Icon eye", () => {
-        test("Then I should see the modal", async () => {
+        test("Then I should see the modal with the corresponding image", async () => {
             const root = document.createElement("div")
             root.setAttribute("id", "root")
             document.body.append(root)
+
             router()
             window.onNavigate(ROUTES_PATH.Bills)
 
+            $.fn.modal = jest.fn()
+
             const billIconEye = screen.getAllByTestId("icon-eye")[0]
             billIconEye.click()
+
+            const billImage = screen.getByAltText("Bill")
+            expect(billImage.getAttribute("src")).toBe(
+                "https://test.storage.tld/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=c1640e12-a24b-4b11-ae52-529112e9602a"
+            )
         })
     })
 })
